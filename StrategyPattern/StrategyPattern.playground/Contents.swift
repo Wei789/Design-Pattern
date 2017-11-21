@@ -1,14 +1,26 @@
 //: Playground - noun: a place where people can play
 
 import UIKit
+import ObjectiveC
+
+
+private var AssociationKey: UInt8 = 0
 
 //-----Abstract superclass-----//
 protocol Role {
-    var weaponBehavior: WeaponBehavior? { get set }
     func display()
 }
 
 extension Role {
+    var weaponBehavior: WeaponBehavior? {
+        get {
+            return objc_getAssociatedObject(self, &AssociationKey) as? WeaponBehavior
+        }
+        set(newValue) {
+            objc_setAssociatedObject(self, &AssociationKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+        }
+    }
+    
     mutating func setWeapon(weaponBehavior: WeaponBehavior?) {
         self.weaponBehavior = weaponBehavior
     }
@@ -21,28 +33,24 @@ extension Role {
 
 //-----Subclass-----//
 class King: Role {
-    var weaponBehavior: WeaponBehavior?
     func display() {
         print("I'am the King.")
     }
 }
 
 class Queen: Role {
-    var weaponBehavior: WeaponBehavior?
     func display() {
         print("I'am the Queen.")
     }
 }
 
 class Knight: Role {
-    var weaponBehavior: WeaponBehavior?
     func display() {
         print("I'am the Knight.")
     }
 }
 
 class Troll: Role {
-    var weaponBehavior: WeaponBehavior?
     func display() {
         print("I'am the Troll.")
     }
